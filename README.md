@@ -1,27 +1,54 @@
-# SampleAngularApp
+### Angular'ın çalışma mantığı;
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.3.
+index.html çalıştırıldığında, bundle edilmiş olan angular javascript kodu yüklenir.
 
-## Development server
+  > "ng build" shell komutu ile yazılmış olan tüm .ts dosyaları tekil bir javascript dosyasına dönüştürüp index.html içerisine ekler. Bu işlem development ortamında "ng serve" komutu ile uygulama çalıştırılırken otomatik yapılırken; production'a yüklenecek olan kodda developer tarafında bir kez çalıştırılması gerekmektedir.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+javascript kodu ilk olarak main.ts dosyasını çalıştırır.
+  > .ts uzantılı dosyalar, sadece developer için nesne yönelimine yakın bir kod yazma deneyimi sağladığı için kullanılmakta)
 
-## Code scaffolding
+```typescript
+  bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));
+```
+main.ts içerisindeki bu kod AppComponent sınıfını(class) ve uygulama genelinde kullanılacak olan route'u yükler.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+> route: kullanıcıların bir URL'ye erişmek istediğinde yapılan işlemleri tanımlamadır. Rotalar, uygulamada farklı bileşenleri (components) ve görünümleri değişik URL'lerle ilişkilendirmenizi sağlar. 
 
-## Build
+AppComponent içerisinde ve daha sonra oluşturlacak olan componentler için @Component decorator kullanır.
+```typescript
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [RouterOutlet, CommonModule, TranslateModule],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css'
+})
+```
+Component'ler üç farklı dosyadan meydana gelirler. Html, css ve typescript kodları
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Bu örnekte app.component.html kullanılmış. Bu html dosyası app.component.ts dosyasında yazılan kodları kullanarak data manipülasyonu yapabilmektedir.
 
-## Running unit tests
+- selector: 'app-root'
+  > Bu bileşenin HTML etiketi veya bileşen seçicisi 'app-root' olarak tanımlanmaktadır. Bu, bu bileşenin <app-root></app-root> etiketi ile kullanılabileceği anlamına gelir.
+  > <app-root> tag'i index.html içerisinde <body><body> içerisine yazılarak çağrılmakadır.
+  > Böylece index.html ilk kez çalştığında, selectör ismi "app-root" olan componentin bağlı olduğu html'i body içerisine gömer. Tanımlanmış olan css dosyasına sadece bu component bazında etkili olacak şekilde çalışır.
+  > 
+- imports: [RouterOutlet, CommonModule, TranslateModule]
+  > uygulama genelinde yüklenmesini istediğimiz module'leri buraya yazıyoruz. Her component kendi içerisinde başka modulleri çağırabilir. Performanslı olması için tüm modüller aynı anda hafızaya yüklenmez. Açılacak olan sayfa hangi component'lerden oluşuyorsa onun ihtiyacı olan moduller yüklenir.   
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+app.component.html içerisindeki <router-outlet /> kodu component.ts'deki RouterOutlet yardımıyla url'de kullanıcının gitmek istediği yolu anlayarak ilişkili componenti app.component.html içerisine gömer.
+  > İlişkilendirme tanımlaması app.routes.ts içerisinde yapılmaktadır. 
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```typescript
+export const routes: Routes = [
+  {
+    path: '',
+    component: HomeComponent,
+  },
+];
 
-## Further help
+```
+> tanımlamış olduğum kodda "localhost:4200/" adresi HomeComponent'e yönlenir. AppComponent'te olduğu gibi html, css ve ts dosyalarını yükler. 
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
