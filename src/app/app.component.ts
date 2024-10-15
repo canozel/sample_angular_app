@@ -1,5 +1,5 @@
 import {Component, importProvidersFrom} from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import {TranslateHttpLoader} from "@ngx-translate/http-loader";
 import {HttpClient, provideHttpClient} from "@angular/common/http";
 import {TranslateLoader, TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -15,7 +15,7 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TranslateModule],
+  imports: [RouterOutlet, CommonModule, TranslateModule, RouterLink],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
